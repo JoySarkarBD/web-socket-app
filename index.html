@@ -1,0 +1,97 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        body {
+            background: #383434;
+        }
+
+        form#form {
+            display: flex;
+             position: fixed; 
+             bottom: 0px; 
+             align-items: center; 
+             justify-content: center; 
+             padding: 20px; 
+             right: 0px; 
+             left: 0px; 
+        }
+
+        h1 {
+            color: fff;
+        }
+        
+        button {
+        padding: 10px;
+        width: 102px;
+        }
+
+        div {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        ul#ul>li {
+        color: white;
+        list-style: none;
+        font-size: 20px;
+        background: #3c3333;
+        border-radius: 10px;
+        max-width: 500px;
+        min-width: 100px;
+        width: 100%;
+        margin: 10px 0;
+        padding: 10px;
+        }
+
+        input {
+            width: 500px;
+            padding: 10px;
+        }
+    </style>
+</head>
+<body class="main">
+    <div>
+        <h1 class="" >Chatting room</h1>
+            <ul id="ul"></ul>
+
+            <form action="" id="form">
+                <input type="text" placeholder="Type your message.">
+                <button type="submit"> Send </button>
+            </form>
+        </form>
+    </div>
+</body>
+<script>
+    // connecting to the WebSocket sever
+const ws = new WebSocket("ws://localhost:3030/");
+    
+    const form = document.getElementById("form");
+    const ul = document.getElementById("ul");
+    
+        // submit message by ws
+    ws.addEventListener ("open" ,function() {
+        form.addEventListener('submit', (e)=>{
+            e.preventDefault()
+            const text = form[0].value;
+            const li = document.createElement("li");
+            li.textContent = 'You: ' + text;
+            ul.appendChild(li);
+            ws.send(text);
+            form[0].value="";
+        });
+    });
+    
+        // receiving message by ws
+    ws.addEventListener("message", (e) => {
+        const li = document.createElement("li");
+        li.textContent = 'Anonymous: ' + e.data;
+        ul.appendChild(li);
+    });
+</script>
+</html>
